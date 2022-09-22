@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r packages}
 library(dbplyr)
 library(tidyverse)
+library(dplyr)
 ```
 
 ```{r read in file}
@@ -26,6 +27,16 @@ WL_perc_vb<-read_csv("VB_WL_perc-1.csv")
 
 ```
 
-```{r}
-hi
+```{r join data}
+NCAA_full_set <- ace_vb %>% right_join(assists_vb, by="Team") %>% right_join(blocks_vb, by="Team") %>% right_join(digs_vb, by="Team") %>% right_join(hit_perc_vb, by="Team") %>% right_join(kills_vb, by="Team") %>% right_join(opp_hits_vb, by="Team") %>% right_join(WL_perc_vb, by="Team")
+
+```
+
+```{r clean data}
+NCAA_full_set <- NCAA_full_set %>% select(-c("...1.x", "...1.y", "S.y", "...1.x.x","S.x.x", "...1.y.y", "S.y.y", "...1.x.x.x", "S.x.x.x","...1.y.y.y", "S.y.y.y", "...1.x.x.x.x", "S","...1.y.y.y.y"))
+```
+
+```{r rename}
+view(NCAA_full_set)
+NCAA_full_set <- NCAA_full_set %>% rename()
 ```
