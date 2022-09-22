@@ -1,0 +1,31 @@
+---
+title: "NCAA Project"
+author: "Amber Duevel"
+date: "9/22/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages}
+library(dbplyr)
+library(tidyverse)
+```
+
+```{r read in file}
+ace_vb<-read_csv("VB_aces-1.csv")
+assists_vb<-read_csv("VB_assists-1.csv")
+blocks_vb<-read_csv("VB_blocks-1.csv")
+digs_vb<-read_csv("VB_digs-1.csv")
+hit_perc_vb<-read_csv("VB_hit_perc-1.csv")
+kills_vb<-read_csv("VB_kills-1.csv")
+opp_hits_vb<-read_csv("VB_opp_hits-1.csv")
+WL_perc_vb<-read_csv("VB_WL_perc-1.csv")
+
+```
+
+```{r}
+
+```
