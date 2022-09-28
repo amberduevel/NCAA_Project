@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r packages}
+library(dbplyr)
 library(tidyverse)
 library(dplyr)
 ```
@@ -32,44 +33,31 @@ NCAA_full_set <- ace_vb %>% right_join(assists_vb, by="Team") %>% right_join(blo
 ```
 
 ```{r clean data}
-NCAA_full_set <- NCAA_full_set %>% select(-c("...1.x", "...1.y", "S.y", "...1.x.x","S.x.x", "...1.y.y", "S.y.y", "...1.x.x.x", "S.x.x.x","...1.y.y.y", "S.y.y.y", "...1.x.x.x.x", "S","...1.y.y.y.y"))
+NCAA_full_set <- NCAA_full_set %>% select(-c("...1.x", "...1.y", "S.y", "...1.x.x","S.x.x", "...1.y.y", "S.y.y", "...1.x.x.x", "S.x.x.x","...1.y.y.y", "S.y.y.y", "...1.x.x.x.x", "S","...1.y.y.y.y","Rank.x","Rank.y","Rank.x.x", "Rank.y.y","Rank.x.x.x","Rank.y.y.y","Rank.x.x.x.x","Rank.y.y.y.y")) %>% distinct(Team, .keep_all = TRUE)
 ```
 
 ```{r rename}
-view(NCAA_full_set)
-NCAA_full_set <- NCAA_full_set %>% rename()
-```
-
-```{r rename}
-NCAA_full_set <- rename(NCAA_full_set,c("Rank_Ace"="Rank.x",
-                                        "Team_Name"="Team",
-                                        "N/A"="S.x",
+NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
+                                        "Sets"="S.x",
                                         "Aces"="Aces",
                                         "Per_Set_x"="Per Set.x",
-                                        "Rank_Assists"="Rank.y",
                                         "Assists"="Assists", 
                                         "Per_Set_y"="Per Set.y",
-                                        "Ranks_Blocks"="Rank.x.x",
                                         "Block_Solos"="Block Solos",
                                         "Block_Assists"="Block Assists",
                                         "Triple_Block"="TB",
-                                        "Rank_Digs"="Rank.y.y",
                                         "Digs"="Digs",
                                         "Per_Set_xx"="Per Set.x.x",
-                                        "Rank_Hit_Percentage"="Rank.x.x.x",
                                         "Kills_x"="Kills.x",
                                         "Errors"="Errors", 
                                         "Total_Attacks"="Total Attacks",
                                         "Hitting_Percentage"="Pct..x",
-                                        "Rank_Kills"="Rank.y.y.y",
                                         "Kills_y"="Kills.y",
                                         "Percentage_Set"="Per Set.y.y",
-                                        "Rank_Opponent_Hits"="Rank.x.x.x.x",
                                         "Opponents_Kill"="Opp Kills",
                                         "Opponents_Errors"="Opp Errors",
                                         "Opponents_Attacks"="Opp Attacks",
                                         "Opponents_Percentage"="Opp Pct",
-                                        "Rank_Win_Lost_Percentage"="Rank.y.y.y.y",
                                         "Win"="W",
                                         "Lost"="L",
                                         "Percentage_Hits"="Pct..y"))
