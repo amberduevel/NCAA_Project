@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r packages}
+library(dbplyr)
 library(tidyverse)
 library(dplyr)
 ```
@@ -43,7 +44,6 @@ NCAA_full_set <- NCAA_full_set %>% select(-c("...1.x", "...1.y", "S.y", "...1.x.
 NCAA_full_set = distinct(NCAA_full_set, Team, .keep_all = TRUE)
 ```
 
-
 ```{r rename}
 NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
                                         "Sets"="S.x",
@@ -55,7 +55,6 @@ NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
                                         "Block_Assists"="Block Assists",
                                         "Triple_Block"="TB",
                                         "Digs"="Digs",
-                                        "Per_Set_xx"="Per Set.x.x",
                                         "Kills"="Kills.x",
                                         "Errors"="Errors", 
                                         "Total_Attacks"="Total Attacks",
