@@ -32,7 +32,9 @@ NCAA_full_set <- ace_vb %>% right_join(assists_vb, by="Team") %>% right_join(blo
 ```
 
 ```{r clean data}
-NCAA_full_set <- NCAA_full_set %>% select(-c("...1.x", "...1.y", "S.y", "...1.x.x","S.x.x", "...1.y.y", "S.y.y", "...1.x.x.x", "S.x.x.x","...1.y.y.y", "S.y.y.y", "...1.x.x.x.x", "S","...1.y.y.y.y"))
+names(NCAA_full_set)
+NCAA_full_set <- NCAA_full_set %>% select(-c("...1.x", "...1.y", "S.y", "...1.x.x","S.x.x", "...1.y.y", "S.y.y", "...1.x.x.x", "S.x.x.x","...1.y.y.y", "S.y.y.y", "...1.x.x.x.x", "S","...1.y.y.y.y", "Rank.x", "Rank.y", "Rank.x.x", "Rank.y.y", "Rank.x.x.x", "Rank.y.y.y", "Rank.x.x.x.x", "Rank.y.y.y.y", "Kills.y")) 
+# NCAA_full_set = distinct(NCAA_full_set, Team, .keep_all = TRUE)
 ```
 
 ```{r rename}
@@ -41,38 +43,130 @@ NCAA_full_set <- NCAA_full_set %>% rename()
 ```
 
 ```{r rename}
-NCAA_full_set <- rename(NCAA_full_set,c("Rank_Ace"="Rank.x",
-                                        "Team_Name"="Team",
-                                        "N/A"="S.x",
+NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
+                                        "Sets"="S.x",
                                         "Aces"="Aces",
                                         "Per_Set_x"="Per Set.x",
-                                        "Rank_Assists"="Rank.y",
                                         "Assists"="Assists", 
                                         "Per_Set_y"="Per Set.y",
-                                        "Ranks_Blocks"="Rank.x.x",
                                         "Block_Solos"="Block Solos",
                                         "Block_Assists"="Block Assists",
                                         "Triple_Block"="TB",
-                                        "Rank_Digs"="Rank.y.y",
                                         "Digs"="Digs",
                                         "Per_Set_xx"="Per Set.x.x",
-                                        "Rank_Hit_Percentage"="Rank.x.x.x",
-                                        "Kills_x"="Kills.x",
+                                        "Kills"="Kills.x",
                                         "Errors"="Errors", 
                                         "Total_Attacks"="Total Attacks",
                                         "Hitting_Percentage"="Pct..x",
-                                        "Rank_Kills"="Rank.y.y.y",
-                                        "Kills_y"="Kills.y",
                                         "Percentage_Set"="Per Set.y.y",
-                                        "Rank_Opponent_Hits"="Rank.x.x.x.x",
                                         "Opponents_Kill"="Opp Kills",
                                         "Opponents_Errors"="Opp Errors",
                                         "Opponents_Attacks"="Opp Attacks",
                                         "Opponents_Percentage"="Opp Pct",
-                                        "Rank_Win_Lost_Percentage"="Rank.y.y.y.y",
                                         "Win"="W",
                                         "Lost"="L",
-                                        "Percentage_Hits"="Pct..y"))
+                                        "Win_Percentage"="Pct..y"))
 
 view(NCAA_full_set)
+```
+
+```{r}
+ace_lm = lm(Win_Percentage~Aces, data = NCAA_full_set)
+summary(ace_lm)
+
+ace_plot = ggplot(aes(x = Aces, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+ace_plot
+
+par(mfrow = c(2,2))
+plot(ace_lm)
+
+assists_lm = lm(Win_Percentage~Assists, data = NCAA_full_set)
+summary(assists_lm)
+
+assists_plot = ggplot(aes(x = Assists, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+assists_plot
+
+par(mfrow = c(2,2))
+plot(assists_lm)
+
+block_solo_lm = lm(Win_Percentage~Block_Solos, data = NCAA_full_set)
+summary(block_solo_lm)
+
+block_solo_plot = ggplot(aes(x = Block_Solos, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+block_solo_plot
+
+par(mfrow = c(2,2))
+plot(block_solo_lm)
+
+block_assists_lm = lm(Win_Percentage~Block_Assists, data = NCAA_full_set)
+summary(block_assists_lm)
+
+block_assists_plot = ggplot(aes(x = Block_Assists, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+block_assists_plot
+
+par(mfrow = c(2,2))
+plot(block_assists_lm)
+
+triple_block_lm = lm(Win_Percentage~Triple_Block, data = NCAA_full_set)
+summary(triple_block_lm)
+
+triple_block_plot = ggplot(aes(x = Triple_Block, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+triple_block_plot
+
+par(mfrow = c(2,2))
+plot(triple_block_lm)
+
+digs_lm = lm(Win_Percentage~Digs, data = NCAA_full_set)
+summary(digs_lm)
+
+digs_plot = ggplot(aes(x = Digs, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+digs_plot
+
+par(mfrow = c(2,2))
+plot(digs_lm)
+
+kills_lm = lm(Win_Percentage~Kills, data = NCAA_full_set)
+summary(kills_lm)
+
+kills_plot = ggplot(aes(x = Kills, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+kills_plot
+
+par(mfrow = c(2,2))
+plot(kills_lm)
+
+errors_lm = lm(Win_Percentage~Errors, data = NCAA_full_set)
+summary(errors_lm)
+
+errors_plot = ggplot(aes(x = Errors, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+errors_plot
+
+par(mfrow = c(2,2))
+plot(errors_lm)
+
+total_attacks_lm = lm(Win_Percentage~Total_Attacks, data = NCAA_full_set)
+summary(total_attacks_lm)
+
+total_attacks_plot = ggplot(aes(x = Total_Attacks, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+total_attacks_plot
+
+par(mfrow = c(2,2))
+plot(total_attacks_lm)
 ```
