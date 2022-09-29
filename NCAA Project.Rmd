@@ -14,7 +14,7 @@ library(tidyverse)
 library(dplyr)
 ```
 
-```{r read in file}
+```{r read in file, message = FALSE, warning = FALSE}
 ace_vb<-read_csv("VB_aces-1.csv")
 assists_vb<-read_csv("VB_assists-1.csv")
 blocks_vb<-read_csv("VB_blocks-1.csv")
@@ -27,20 +27,22 @@ WL_perc_vb<-read_csv("VB_WL_perc-1.csv")
 ```
 
 ```{r join data}
-NCAA_full_set <- ace_vb %>% right_join(assists_vb, by="Team") %>% right_join(blocks_vb, by="Team") %>% right_join(digs_vb, by="Team") %>% right_join(hit_perc_vb, by="Team") %>% right_join(kills_vb, by="Team") %>% right_join(opp_hits_vb, by="Team") %>% right_join(WL_perc_vb, by="Team")
-
+NCAA_full_set <- ace_vb %>% right_join(assists_vb, by="Team") %>% 
+  right_join(blocks_vb, by="Team") %>% 
+  right_join(digs_vb, by="Team") %>% 
+  right_join(hit_perc_vb, by="Team") %>% 
+  right_join(kills_vb, by="Team") %>% 
+  right_join(opp_hits_vb, by="Team") %>% 
+  right_join(WL_perc_vb, by="Team")
 ```
 
 ```{r clean data}
 names(NCAA_full_set)
 NCAA_full_set <- NCAA_full_set %>% select(-c("...1.x", "...1.y", "S.y", "...1.x.x","S.x.x", "...1.y.y", "S.y.y", "...1.x.x.x", "S.x.x.x","...1.y.y.y", "S.y.y.y", "...1.x.x.x.x", "S","...1.y.y.y.y", "Rank.x", "Rank.y", "Rank.x.x", "Rank.y.y", "Rank.x.x.x", "Rank.y.y.y", "Rank.x.x.x.x", "Rank.y.y.y.y", "Kills.y")) 
-# NCAA_full_set = distinct(NCAA_full_set, Team, .keep_all = TRUE)
+
+NCAA_full_set = distinct(NCAA_full_set, Team, .keep_all = TRUE)
 ```
 
-```{r rename}
-view(NCAA_full_set)
-NCAA_full_set <- NCAA_full_set %>% rename()
-```
 
 ```{r rename}
 NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
@@ -67,10 +69,10 @@ NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
                                         "Lost"="L",
                                         "Win_Percentage"="Pct..y"))
 
-view(NCAA_full_set)
 ```
 
-```{r}
+
+```{r ace}
 ace_lm = lm(Win_Percentage~Aces, data = NCAA_full_set)
 summary(ace_lm)
 
@@ -81,7 +83,10 @@ ace_plot
 
 par(mfrow = c(2,2))
 plot(ace_lm)
+```
 
+
+```{r assists}
 assists_lm = lm(Win_Percentage~Assists, data = NCAA_full_set)
 summary(assists_lm)
 
@@ -92,7 +97,9 @@ assists_plot
 
 par(mfrow = c(2,2))
 plot(assists_lm)
+```
 
+```{r block solo}
 block_solo_lm = lm(Win_Percentage~Block_Solos, data = NCAA_full_set)
 summary(block_solo_lm)
 
@@ -103,7 +110,9 @@ block_solo_plot
 
 par(mfrow = c(2,2))
 plot(block_solo_lm)
+```
 
+```{r block assists}
 block_assists_lm = lm(Win_Percentage~Block_Assists, data = NCAA_full_set)
 summary(block_assists_lm)
 
@@ -114,7 +123,9 @@ block_assists_plot
 
 par(mfrow = c(2,2))
 plot(block_assists_lm)
+```
 
+```{r triple block}
 triple_block_lm = lm(Win_Percentage~Triple_Block, data = NCAA_full_set)
 summary(triple_block_lm)
 
@@ -125,7 +136,9 @@ triple_block_plot
 
 par(mfrow = c(2,2))
 plot(triple_block_lm)
+```
 
+```{r digs}
 digs_lm = lm(Win_Percentage~Digs, data = NCAA_full_set)
 summary(digs_lm)
 
@@ -136,7 +149,9 @@ digs_plot
 
 par(mfrow = c(2,2))
 plot(digs_lm)
+```
 
+```{r kills}
 kills_lm = lm(Win_Percentage~Kills, data = NCAA_full_set)
 summary(kills_lm)
 
@@ -147,7 +162,9 @@ kills_plot
 
 par(mfrow = c(2,2))
 plot(kills_lm)
+```
 
+```{r errors}
 errors_lm = lm(Win_Percentage~Errors, data = NCAA_full_set)
 summary(errors_lm)
 
@@ -158,7 +175,9 @@ errors_plot
 
 par(mfrow = c(2,2))
 plot(errors_lm)
+```
 
+```{r total attacks}
 total_attacks_lm = lm(Win_Percentage~Total_Attacks, data = NCAA_full_set)
 summary(total_attacks_lm)
 
