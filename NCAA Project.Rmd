@@ -349,3 +349,9 @@ ggplot(data = mod_summary_df, aes(y = Estimate, ymin = Lower_bound, ymax = Upper
   geom_hline(yintercept = 0, lty = 2) +
   coord_flip()
 ```
+```{r r^2 chart}
+
+r_squared_chart<-data.frame(Team_Variable=c("Ace","Assists","Block_Solo","Block_Assists", "Total_Block", "Digs","Kills","Errors","Total_Attacks"), R_2=c(0.07337, 0.1374, 0.004121,0.1491,0.1426,0.008188,0.1384,0.1383, -0.002478), stringsAsFactors = FALSE)
+
+r_squared_chart
+```
