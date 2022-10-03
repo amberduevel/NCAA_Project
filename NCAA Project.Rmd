@@ -219,21 +219,25 @@ triple_block2_plot
 
 par(mfrow = c(2,2))
 plot(triple_block_trans)
-```
-
+``` 
 
 ```{r triple_block_plot, echo = FALSE, message = FALSE, warning = FALSE}
 triple_block_plot = ggplot(aes(x = Triple_Block, y = Win_Percentage), data = NCAA_full_set) +
   geom_point() +
   geom_smooth(method = "lm")
 triple_block_plot
+```
+The scatterplot above shows the relationship between Total Block and Win Percentage. This plot shows a positive relationship where, as a team's total blocks increase, their win percentage will increase.
 
+```{r triple_block_plot, echo = FALSE, message = FALSE, warning = FALSE}
 par(mfrow = c(2,2))
 plot(triple_block_lm)
 
 boxCox(triple_block_lm)
 ```
+In the four diagnostic plots for Total Block, it can be seen in the Normal Q-Q plot that there is skewness on the lower and upper bounds of the plot. This is shown in the points that deviate from the line. In the Scale_Location plot, the red line is roughly horizontal with a slight negative trend in the lower fitted values. In the Residuals vs Leverage plot, it shows a few values with -3 and 3 standardized residuals, but no points in the right corners of the plot which usually suggest possible outliers. 
 
+Looking at the Box-Cox plot, it shows that the best $\lambda$ value is 1, which suggests no transformation to the linear model. 
 
 ```{r digs, include = FALSE}
 digs_lm = lm(Win_Percentage+0.01~Digs, data = NCAA_full_set)
