@@ -24,7 +24,6 @@ hit_perc_vb<-read_csv("VB_hit_perc-1.csv")
 kills_vb<-read_csv("VB_kills-1.csv")
 opp_hits_vb<-read_csv("VB_opp_hits-1.csv")
 WL_perc_vb<-read_csv("VB_WL_perc-1.csv")
-
 ```
 
 ```{r join data}
@@ -40,7 +39,6 @@ NCAA_full_set <- ace_vb %>% right_join(assists_vb, by="Team") %>%
 ```{r clean data}
 names(NCAA_full_set)
 NCAA_full_set <- NCAA_full_set %>% select(-c("...1.x", "...1.y", "S.y", "...1.x.x","S.x.x", "...1.y.y", "S.y.y", "...1.x.x.x", "S.x.x.x","...1.y.y.y", "S.y.y.y", "...1.x.x.x.x", "S","...1.y.y.y.y", "Rank.x", "Rank.y", "Rank.x.x", "Rank.y.y", "Rank.x.x.x", "Rank.y.y.y", "Rank.x.x.x.x", "Rank.y.y.y.y", "Kills.y")) 
-
 NCAA_full_set = distinct(NCAA_full_set, Team, .keep_all = TRUE)
 ```
 
@@ -69,9 +67,10 @@ NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
                                         "Win"="W",
                                         "Lost"="L",
                                         "Win_Percentage"="Pct..y"))
-
 ```
+Intro:
 
+In this project we focused on one main research question; what team statistic(s) is most highly predictive of team’s wins and losses. We answered this question by testing for the R2 score between win percentages and each team statistic variable. The team statistic variables are things like aces, blocks, assists, etc. This way we can see if any of the variables have a correlation with win percentage. 
 
 ```{r ace}
 ace_lm = lm((Win_Percentage+0.01)~Aces, data = NCAA_full_set)
@@ -84,10 +83,9 @@ ace_plot
 
 par(mfrow = c(2,2))
 plot(ace_lm)
-
 boxCox(ace_lm)
-# suggests log transformation
 
+# suggests log transformation
 ace_trans = lm(sqrt(Win_Percentage)~Aces, data = NCAA_full_set)
 summary(ace_trans)
 
@@ -112,10 +110,9 @@ assists_plot
 
 par(mfrow = c(2,2))
 plot(assists_lm)
-
 boxCox(assists_lm)
-# I guess it suggests log transformation. Includes 0.75, but not 0.5 or 1. 
 
+# I guess it suggests log transformation. Includes 0.75, but not 0.5 or 1. 
 assists_trans = lm(log(Win_Percentage + 0.01)~Assists, data = NCAA_full_set)
 summary(assists_trans)
 
@@ -139,10 +136,9 @@ block_solo_plot
 
 par(mfrow = c(2,2))
 plot(block_solo_lm)
-
 boxCox(block_solo_lm)
-# suggests log transformation
 
+# suggests log transformation
 block_solo_trans = lm(log(Win_Percentage + 0.01)~Block_Solos, data = NCAA_full_set)
 summary(block_solo_trans)
 
@@ -166,10 +162,9 @@ block_assists_plot
 
 par(mfrow = c(2,2))
 plot(block_assists_lm)
-
 boxCox(block_assists_lm)
-# suggests log transformation
 
+# suggests log transformation
 block_assists_trans = lm(log(Win_Percentage + 0.01)~Block_Assists, data = NCAA_full_set)
 summary(block_assists_trans)
 
@@ -193,10 +188,9 @@ triple_block_plot
 
 par(mfrow = c(2,2))
 plot(triple_block_lm)
-
 boxCox(triple_block_lm)
-# suggests log transformation
 
+# suggests log transformation
 triple_block_trans = lm(log(Win_Percentage + 0.01)~Triple_Block, data = NCAA_full_set)
 summary(triple_block_trans)
 
@@ -220,10 +214,9 @@ digs_plot
 
 par(mfrow = c(2,2))
 plot(digs_lm)
-
 boxCox(digs_lm)
-# suggests log transformation
 
+# suggests log transformation
 digs_trans = lm(log(Win_Percentage + 0.01)~Digs, data = NCAA_full_set)
 summary(digs_trans)
 
@@ -247,10 +240,9 @@ kills_plot
 
 par(mfrow = c(2,2))
 plot(kills_lm)
-
 boxCox(kills_lm)
-# suggests log transformation
 
+# suggests log transformation
 kills_trans = lm(log(Win_Percentage + 0.01)~Kills, data = NCAA_full_set)
 summary(kills_trans)
 
@@ -274,10 +266,9 @@ errors_plot
 
 par(mfrow = c(2,2))
 plot(errors_lm)
-
 boxCox(errors_lm)
-# suggests log transformation
 
+# suggests log transformation
 errors_trans = lm(log(Win_Percentage + 0.01)~Errors, data = NCAA_full_set)
 summary(errors_trans)
 
@@ -301,10 +292,9 @@ total_attacks_plot
 
 par(mfrow = c(2,2))
 plot(total_attacks_lm)
-
 boxCox(total_attacks_lm)
-# suggests log transformation
 
+# suggests log transformation
 total_attacks_trans = lm(log(Win_Percentage + 0.01)~Total_Attacks, data = NCAA_full_set)
 summary(total_attacks_trans)
 
