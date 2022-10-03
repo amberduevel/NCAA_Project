@@ -2,20 +2,23 @@
 title: "NCAA Project"
 author: "Amber Duevel"
 date: "9/22/2022"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r packages, message = FALSE, warning = FALSE}
+```{r packages, message = FALSE, warning = FALSE, include = FALSE}
 library(tidyverse)
 library(dplyr)
 library(car)
+library(GGally)
 ```
 
-```{r read in file, message = FALSE, warning = FALSE}
+```{r read in file, message = FALSE, warning = FALSE, include = FALSE}
 ace_vb<-read_csv("VB_aces-1.csv")
 assists_vb<-read_csv("VB_assists-1.csv")
 blocks_vb<-read_csv("VB_blocks-1.csv")
@@ -24,9 +27,10 @@ hit_perc_vb<-read_csv("VB_hit_perc-1.csv")
 kills_vb<-read_csv("VB_kills-1.csv")
 opp_hits_vb<-read_csv("VB_opp_hits-1.csv")
 WL_perc_vb<-read_csv("VB_WL_perc-1.csv")
+
 ```
 
-```{r join data}
+```{r join data, include = FALSE}
 NCAA_full_set <- ace_vb %>% right_join(assists_vb, by="Team") %>% 
   right_join(blocks_vb, by="Team") %>% 
   right_join(digs_vb, by="Team") %>% 
@@ -36,14 +40,15 @@ NCAA_full_set <- ace_vb %>% right_join(assists_vb, by="Team") %>%
   right_join(WL_perc_vb, by="Team")
 ```
 
-```{r clean data}
+```{r clean data, include = FALSE}
 names(NCAA_full_set)
 NCAA_full_set <- NCAA_full_set %>% select(-c("...1.x", "...1.y", "S.y", "...1.x.x","S.x.x", "...1.y.y", "S.y.y", "...1.x.x.x", "S.x.x.x","...1.y.y.y", "S.y.y.y", "...1.x.x.x.x", "S","...1.y.y.y.y", "Rank.x", "Rank.y", "Rank.x.x", "Rank.y.y", "Rank.x.x.x", "Rank.y.y.y", "Rank.x.x.x.x", "Rank.y.y.y.y", "Kills.y")) 
+
 NCAA_full_set = distinct(NCAA_full_set, Team, .keep_all = TRUE)
 ```
 
 
-```{r rename}
+```{r rename, include = FALSE}
 NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
                                         "Sets"="S.x",
                                         "Aces"="Aces",
@@ -67,31 +72,27 @@ NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
                                         "Win"="W",
                                         "Lost"="L",
                                         "Win_Percentage"="Pct..y"))
+
 ```
-Intro:
 
-   In this project we focused on one main research question; what team statistic(s) is most highly predictive of team’s wins and losses. We answered this question by testing for the R2 score between win percentages and each team statistic variable. The team statistic variables are things like aces, blocks, assists, etc. This way we can see if any of the variables have a correlation with win percentage. 
+## Intro
 
+  In this project we focused on one main research question; what team statistic(s) is most highly predictive of team’s wins and losses. We answered this question by testing for the R2 score between win percentages and each team statistic variable. The team statistic variables are things like aces, blocks, assists, etc. This way we can see if any of the variables have a correlation with win percentage. 
 
-Methods Section:
+## Methods Section
 
    The statistic variables that that were compared to win percentage were ace, assists, block solos, block assists, triple blocks, digs, kills, errors, and total attacks. We focused on three main things when trying to answer our research question using R version 4.2.1. The first one is looking at the summary of simple linear regression model. This told us the R2 score for win percentage and each team statistic variable. Next, we looked at the four diagnostic plots. Here we were able to look to see if there were any outliers and if the data looked normal. Some of the plots looked a little skewed showing non-normality. This is where we used the Box-Cox method. The Box-Cox method showed us if we needed to do any transformations to normalize the data. Before we could conduct the Box-Cox method, we needed to add 0.01 to all the y-values because it doesn’t allow us  to use the method with any zeros. By using the Box-Cox method, we found that none of the data needed to be normalized. 
+   
+```{r r^2 chart, message = FALSE, warning = FALSE, echo = FALSE}
+r_squared_chart<-data.frame(Team_Variable=c("Ace","Assists","Block_Solo","Block_Assists", "Total_Block", "Digs","Kills","Errors","Total_Attacks"), R_2=c(0.07337, 0.1374, 0.004121,0.1491,0.1426,0.008188,0.1384,0.1383, -0.002478), stringsAsFactors = FALSE)
+r_squared_chart
+```
 
 
-```{r ace}
+```{r ace, include = FALSE}
 ace_lm = lm((Win_Percentage+0.01)~Aces, data = NCAA_full_set)
 summary(ace_lm)
 
-ace_plot = ggplot(aes(x = Aces, y = Win_Percentage), data = NCAA_full_set) +
-  geom_point() +
-  geom_smooth(method = "lm")
-ace_plot
-
-par(mfrow = c(2,2))
-plot(ace_lm)
-boxCox(ace_lm)
-
-# suggests log transformation
 ace_trans = lm(sqrt(Win_Percentage)~Aces, data = NCAA_full_set)
 summary(ace_trans)
 
@@ -104,21 +105,23 @@ par(mfrow = c(2,2))
 plot(ace_trans)
 ```
 
+```{r ace_plot, include = FALSE}
+ace_plot = ggplot(aes(x = Aces, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+ace_plot
 
-```{r assists}
+par(mfrow = c(2,2))
+plot(ace_lm)
+
+boxCox(ace_lm)
+```
+
+
+```{r assists, include = FALSE}
 assists_lm = lm(Win_Percentage+0.01~Assists, data = NCAA_full_set)
 summary(assists_lm)
 
-assists_plot = ggplot(aes(x = Assists, y = Win_Percentage), data = NCAA_full_set) +
-  geom_point() +
-  geom_smooth(method = "lm")
-assists_plot
-
-par(mfrow = c(2,2))
-plot(assists_lm)
-boxCox(assists_lm)
-
-# I guess it suggests log transformation. Includes 0.75, but not 0.5 or 1. 
 assists_trans = lm(log(Win_Percentage + 0.01)~Assists, data = NCAA_full_set)
 summary(assists_trans)
 
@@ -131,20 +134,22 @@ par(mfrow = c(2,2))
 plot(assists_trans)
 ```
 
-```{r block solo}
+```{r assists_plot, include = FALSE}
+assists_plot = ggplot(aes(x = Assists, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+assists_plot
+
+par(mfrow = c(2,2))
+plot(assists_lm)
+
+boxCox(assists_lm)
+```
+
+```{r block solo, include = FALSE}
 block_solo_lm = lm(Win_Percentage+0.01~Block_Solos, data = NCAA_full_set)
 summary(block_solo_lm)
 
-block_solo_plot = ggplot(aes(x = Block_Solos, y = Win_Percentage), data = NCAA_full_set) +
-  geom_point() +
-  geom_smooth(method = "lm")
-block_solo_plot
-
-par(mfrow = c(2,2))
-plot(block_solo_lm)
-boxCox(block_solo_lm)
-
-# suggests log transformation
 block_solo_trans = lm(log(Win_Percentage + 0.01)~Block_Solos, data = NCAA_full_set)
 summary(block_solo_trans)
 
@@ -157,20 +162,24 @@ par(mfrow = c(2,2))
 plot(block_solo_trans)
 ```
 
-```{r block assists}
+
+```{r block_solo_plot, include = FALSE}
+block_solo_plot = ggplot(aes(x = Block_Solos, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+block_solo_plot
+
+par(mfrow = c(2,2))
+plot(block_solo_lm)
+
+boxCox(block_solo_lm)
+```
+
+
+```{r block assists, include = FALSE}
 block_assists_lm = lm(Win_Percentage+0.01~Block_Assists, data = NCAA_full_set)
 summary(block_assists_lm)
 
-block_assists_plot = ggplot(aes(x = Block_Assists, y = Win_Percentage), data = NCAA_full_set) +
-  geom_point() +
-  geom_smooth(method = "lm")
-block_assists_plot
-
-par(mfrow = c(2,2))
-plot(block_assists_lm)
-boxCox(block_assists_lm)
-
-# suggests log transformation
 block_assists_trans = lm(log(Win_Percentage + 0.01)~Block_Assists, data = NCAA_full_set)
 summary(block_assists_trans)
 
@@ -183,20 +192,23 @@ par(mfrow = c(2,2))
 plot(block_assists_trans)
 ```
 
-```{r triple block}
+
+```{r block_assists_plot, echo = FALSE, message = FALSE, warning = FALSE}
+block_assists_plot = ggplot(aes(x = Block_Assists, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+block_assists_plot
+
+par(mfrow = c(2,2))
+plot(block_assists_lm)
+
+boxCox(block_assists_lm)
+```
+
+```{r triple block, include = FALSE}
 triple_block_lm = lm(Win_Percentage+0.01~Triple_Block, data = NCAA_full_set)
 summary(triple_block_lm)
 
-triple_block_plot = ggplot(aes(x = Triple_Block, y = Win_Percentage), data = NCAA_full_set) +
-  geom_point() +
-  geom_smooth(method = "lm")
-triple_block_plot
-
-par(mfrow = c(2,2))
-plot(triple_block_lm)
-boxCox(triple_block_lm)
-
-# suggests log transformation
 triple_block_trans = lm(log(Win_Percentage + 0.01)~Triple_Block, data = NCAA_full_set)
 summary(triple_block_trans)
 
@@ -209,20 +221,24 @@ par(mfrow = c(2,2))
 plot(triple_block_trans)
 ```
 
-```{r digs}
+
+```{r triple_block_plot, echo = FALSE, message = FALSE, warning = FALSE}
+triple_block_plot = ggplot(aes(x = Triple_Block, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+triple_block_plot
+
+par(mfrow = c(2,2))
+plot(triple_block_lm)
+
+boxCox(triple_block_lm)
+```
+
+
+```{r digs, include = FALSE}
 digs_lm = lm(Win_Percentage+0.01~Digs, data = NCAA_full_set)
 summary(digs_lm)
 
-digs_plot = ggplot(aes(x = Digs, y = Win_Percentage), data = NCAA_full_set) +
-  geom_point() +
-  geom_smooth(method = "lm")
-digs_plot
-
-par(mfrow = c(2,2))
-plot(digs_lm)
-boxCox(digs_lm)
-
-# suggests log transformation
 digs_trans = lm(log(Win_Percentage + 0.01)~Digs, data = NCAA_full_set)
 summary(digs_trans)
 
@@ -235,7 +251,20 @@ par(mfrow = c(2,2))
 plot(digs_trans)
 ```
 
-```{r kills}
+```{r digs_plot, include = FALSE}
+digs_plot = ggplot(aes(x = Digs, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+digs_plot
+
+par(mfrow = c(2,2))
+plot(digs_lm)
+
+boxCox(digs_lm)
+```
+
+
+```{r kills, include = FALSE}
 kills_lm = lm(Win_Percentage+0.01~Kills, data = NCAA_full_set)
 summary(kills_lm)
 
@@ -246,9 +275,10 @@ kills_plot
 
 par(mfrow = c(2,2))
 plot(kills_lm)
-boxCox(kills_lm)
 
+boxCox(kills_lm)
 # suggests log transformation
+
 kills_trans = lm(log(Win_Percentage + 0.01)~Kills, data = NCAA_full_set)
 summary(kills_trans)
 
@@ -261,20 +291,24 @@ par(mfrow = c(2,2))
 plot(kills_trans)
 ```
 
-```{r errors}
+
+```{r kills_plot, include = FALSE}
+kills_plot = ggplot(aes(x = Kills, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+kills_plot
+
+par(mfrow = c(2,2))
+plot(kills_lm)
+
+boxCox(kills_lm)
+```
+
+
+```{r errors, include = FALSE}
 errors_lm = lm(Win_Percentage+0.01~Errors, data = NCAA_full_set)
 summary(errors_lm)
 
-errors_plot = ggplot(aes(x = Errors, y = Win_Percentage), data = NCAA_full_set) +
-  geom_point() +
-  geom_smooth(method = "lm")
-errors_plot
-
-par(mfrow = c(2,2))
-plot(errors_lm)
-boxCox(errors_lm)
-
-# suggests log transformation
 errors_trans = lm(log(Win_Percentage + 0.01)~Errors, data = NCAA_full_set)
 summary(errors_trans)
 
@@ -287,20 +321,23 @@ par(mfrow = c(2,2))
 plot(errors_trans)
 ```
 
-```{r total attacks}
+```{r errors_plot, include = FALSE}
+errors_plot = ggplot(aes(x = Errors, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+errors_plot
+
+par(mfrow = c(2,2))
+plot(errors_lm)
+
+boxCox(errors_lm)
+```
+
+
+```{r total attacks, include = FALSE}
 total_attacks_lm = lm(Win_Percentage+0.01~Total_Attacks, data = NCAA_full_set)
 summary(total_attacks_lm)
 
-total_attacks_plot = ggplot(aes(x = Total_Attacks, y = Win_Percentage), data = NCAA_full_set) +
-  geom_point() +
-  geom_smooth(method = "lm")
-total_attacks_plot
-
-par(mfrow = c(2,2))
-plot(total_attacks_lm)
-boxCox(total_attacks_lm)
-
-# suggests log transformation
 total_attacks_trans = lm(log(Win_Percentage + 0.01)~Total_Attacks, data = NCAA_full_set)
 summary(total_attacks_trans)
 
@@ -313,13 +350,24 @@ par(mfrow = c(2,2))
 plot(total_attacks_trans)
 ```
 
-```{r scatterplot matrix}
+```{r total_attacks_plot, include = FALSE}
+total_attacks_plot = ggplot(aes(x = Total_Attacks, y = Win_Percentage), data = NCAA_full_set) +
+  geom_point() +
+  geom_smooth(method = "lm")
+total_attacks_plot
+
+par(mfrow = c(2,2))
+plot(total_attacks_lm)
+
+boxCox(total_attacks_lm)
+```
+
+
+```{r scatterplot matrix, warning = FALSE, message = FALSE, echo = FALSE}
 ggpairs(NCAA_full_set %>% dplyr::select(Win_Percentage, Block_Assists, Triple_Block))
 ```
 
-```{r forest plot}
-confint(ace_lm)
-
+```{r forest plot, warning = FALSE, message = FALSE, echo = FALSE}
 slope_vector = c(coefficients(ace_lm)[2], 
                  coefficients(assists_lm)[2], 
                  coefficients(block_solo_lm)[2], 
@@ -342,16 +390,9 @@ mod_summary_df = data.frame(mod = c("ace_lm", "assists_lm", "block_solo_lm", "bl
             confint(total_attacks_lm)[2,])
 )
 colnames(mod_summary_df) = c("Model", "Estimate", "Lower_bound", "Upper_bound")
-mod_summary_df
 
 ggplot(data = mod_summary_df, aes(y = Estimate, ymin = Lower_bound, ymax = Upper_bound, x = Model)) +
   geom_pointrange() + 
   geom_hline(yintercept = 0, lty = 2) +
   coord_flip()
-```
-```{r r^2 chart}
-
-r_squared_chart<-data.frame(Team_Variable=c("Ace","Assists","Block_Solo","Block_Assists", "Total_Block", "Digs","Kills","Errors","Total_Attacks"), R_2=c(0.07337, 0.1374, 0.004121,0.1491,0.1426,0.008188,0.1384,0.1383, -0.002478), stringsAsFactors = FALSE)
-
-r_squared_chart
 ```
