@@ -192,7 +192,6 @@ par(mfrow = c(2,2))
 plot(block_assists_trans)
 ```
 
-
 ```{r block_assists_plot, echo = FALSE, message = FALSE, warning = FALSE}
 block_assists_plot = ggplot(aes(x = Block_Assists, y = Win_Percentage), data = NCAA_full_set) +
   geom_point() +
@@ -204,6 +203,7 @@ plot(block_assists_lm)
 
 boxCox(block_assists_lm)
 ```
+Here we first looked at the linear regression model. The graph shows a moderately strong positive linear correlation. There are a significant amount of points that aren't near the linear line so it's not a great display of the correlation between the block assists and win percentage. The next thing we looked at was the four diagnostic plots for block assists. When looking at the normal qq plot, the points tend to follow the line with a few skewed left at the end and few points skewed right at the beginning. When looking at the residual vs leverage plot there are a few points that are outside of the -2 and 2 range. For the most part a majority of the data points stay in between the two. The plot that was looked at was the Box-Cox plot. This plot showed if we need to add any transformations to normalize our data. We found that it included one which means we don't need any transformations to normalize the data.
 
 ```{r triple block, include = FALSE}
 triple_block_lm = lm(Win_Percentage+0.01~Triple_Block, data = NCAA_full_set)
