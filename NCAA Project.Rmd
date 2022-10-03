@@ -312,3 +312,40 @@ total_attacks2_plot
 par(mfrow = c(2,2))
 plot(total_attacks_trans)
 ```
+
+```{r scatterplot matrix}
+ggpairs(NCAA_full_set %>% dplyr::select(Win_Percentage, Block_Assists, Triple_Block))
+```
+
+```{r forest plot}
+confint(ace_lm)
+
+slope_vector = c(coefficients(ace_lm)[2], 
+                 coefficients(assists_lm)[2], 
+                 coefficients(block_solo_lm)[2], 
+                 coefficients(block_assists_lm)[2], 
+                 coefficients(triple_block_lm)[2], 
+                 coefficients(digs_lm)[2], 
+                 coefficients(kills_lm)[2], 
+                 coefficients(errors_lm)[2], 
+                 coefficients(total_attacks_lm)[2])
+
+mod_summary_df = data.frame(mod = c("ace_lm", "assists_lm", "block_solo_lm", "block_assists_lm", "triple_block_lm", "digs_lm", "kills_lm", "errors_lm", "total_attacks_lm"), slope_vector) %>% mutate(
+  bind_rows(confint(ace_lm)[2,], 
+            confint(assists_lm)[2,],
+            confint(block_solo_lm)[2,],
+            confint(block_assists_lm)[2,],
+            confint(triple_block_lm)[2,],
+            confint(digs_lm)[2,],
+            confint(kills_lm)[2,],
+            confint(errors_lm)[2,],
+            confint(total_attacks_lm)[2,])
+)
+colnames(mod_summary_df) = c("Model", "Estimate", "Lower_bound", "Upper_bound")
+mod_summary_df
+
+ggplot(data = mod_summary_df, aes(y = Estimate, ymin = Lower_bound, ymax = Upper_bound, x = Model)) +
+  geom_pointrange() + 
+  geom_hline(yintercept = 0, lty = 2) +
+  coord_flip()
+```
