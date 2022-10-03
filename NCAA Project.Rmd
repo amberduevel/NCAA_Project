@@ -87,7 +87,7 @@ NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
 r_squared_chart<-data.frame(Team_Variable=c("Ace","Assists","Block_Solo","Block_Assists", "Total_Block", "Digs","Kills","Errors","Total_Attacks"), R_2=c(0.07337, 0.1374, 0.004121,0.1491,0.1426,0.008188,0.1384,0.1383, -0.002478), stringsAsFactors = FALSE)
 r_squared_chart
 ```
-
+We first compared all the R^2 for each team statistic variable. By doing this we were able to rule out the majority of the team statistic variables that didn't influence the win-loss percentage. When looking at the R^2 values we saw that block assists and total blocks have the two highest values. We then took these two variables and started looking at their simple linear regression plots and four diagnostic plots.
 
 ```{r ace, include = FALSE}
 ace_lm = lm((Win_Percentage+0.01)~Aces, data = NCAA_full_set)
