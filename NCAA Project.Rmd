@@ -70,12 +70,12 @@ NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
 ```
 Intro:
 
-  In this project we focused on one main research question; what team statistic(s) is most highly predictive of team’s wins and losses. We answered this question by testing for the R2 score between win percentages and each team statistic variable. The team statistic variables are things like aces, blocks, assists, etc. This way we can see if any of the variables have a correlation with win percentage. 
+   In this project we focused on one main research question; what team statistic(s) is most highly predictive of team’s wins and losses. We answered this question by testing for the R2 score between win percentages and each team statistic variable. The team statistic variables are things like aces, blocks, assists, etc. This way we can see if any of the variables have a correlation with win percentage. 
+
 
 Methods Section:
 
-	The statistic variables that that were compared to win percentage were ace, assists, block solos, block assists, triple blocks, digs, kills, errors, and total attacks. We focused on three main things when trying to answer our research question using R version 4.2.1. The first one is looking at the summary of simple linear regression model. This told us the R2 score for win percentage and each team statistic variable. Next, we looked at the four diagnostic plots. Here we were able to look to see if there were any outliers and if the data looked normal. Some of the plots looked a little skewed showing non-normality. This is where we used the Box-Cox method. The Box-Cox method showed us if we needed to do any transformations to normalize the data. Before we could conduct the Box-Cox method, we needed to add 0.01 to all the y-values because it doesn’t allow us  to use the method with any zeros. By using the Box-Cox method, we found that none of the data needed to be normalized. 
- 
+   The statistic variables that that were compared to win percentage were ace, assists, block solos, block assists, triple blocks, digs, kills, errors, and total attacks. We focused on three main things when trying to answer our research question using R version 4.2.1. The first one is looking at the summary of simple linear regression model. This told us the R2 score for win percentage and each team statistic variable. Next, we looked at the four diagnostic plots. Here we were able to look to see if there were any outliers and if the data looked normal. Some of the plots looked a little skewed showing non-normality. This is where we used the Box-Cox method. The Box-Cox method showed us if we needed to do any transformations to normalize the data. Before we could conduct the Box-Cox method, we needed to add 0.01 to all the y-values because it doesn’t allow us  to use the method with any zeros. By using the Box-Cox method, we found that none of the data needed to be normalized. 
 
 
 ```{r ace}
