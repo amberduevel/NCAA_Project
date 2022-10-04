@@ -1,7 +1,7 @@
 ---
 title: "NCAA Project"
-author: "Amber Duevel"
-date: "9/22/2022"
+author: "Amber Duevel and Sidney Williams"
+date: "10/4/2022"
 output:
   word_document: default
   html_document: default
@@ -57,7 +57,7 @@ NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
                                         "Per_Set_y"="Per Set.y",
                                         "Block_Solos"="Block Solos",
                                         "Block_Assists"="Block Assists",
-                                        "Triple_Block"="TB",
+                                        "Total_Block"="TB",
                                         "Digs"="Digs",
                                         "Per_Set_xx"="Per Set.x.x",
                                         "Kills"="Kills.x",
@@ -75,19 +75,22 @@ NCAA_full_set <- rename(NCAA_full_set,c("Team_Name"="Team",
 
 ```
 
-## Intro
+## Introduction
 
-  In this project we focused on one main research question; what team statistic(s) is most highly predictive of team’s wins and losses. We answered this question by testing for the R2 score between win percentages and each team statistic variable. The team statistic variables are things like aces, blocks, assists, etc. This way we can see if any of the variables have a correlation with win percentage. 
+  In this project we focused on one main research question; what team statistic(s) is most highly predictive of team’s wins and losses. We answered this question by testing for the $R^{2}$ score between win percentages and each team statistic variable. The team statistic variables are things like aces, blocks, assists, etc. This way we can see if any of the variables have a correlation with win percentage. 
 
-## Methods Section
+## Methods 
 
-   The statistic variables that that were compared to win percentage were ace, assists, block solos, block assists, triple blocks, digs, kills, errors, and total attacks. We focused on three main things when trying to answer our research question using R version 4.2.1. The first one is looking at the summary of simple linear regression model. This told us the R2 score for win percentage and each team statistic variable. Next, we looked at the four diagnostic plots. Here we were able to look to see if there were any outliers and if the data looked normal. Some of the plots looked a little skewed showing non-normality. This is where we used the Box-Cox method. The Box-Cox method showed us if we needed to do any transformations to normalize the data. Before we could conduct the Box-Cox method, we needed to add 0.01 to all the y-values because it doesn’t allow us  to use the method with any zeros. By using the Box-Cox method, we found that none of the data needed to be normalized. 
+   The statistic variables that that were compared to win percentage were ace, assists, block solos, block assists, triple blocks, digs, kills, errors, and total attacks. We focused on three main things when trying to answer our research question using R version 4.2.1. The first one is looking at the summary of simple linear regression model. This told us the $R^{2}$ score for win percentage and each team statistic variable. Next, we looked at the four diagnostic plots. Here, we were able to look to see if there were any outliers and if the data looked normal. Some of the plots looked a little skewed showing non-normality. This is where we used the Box-Cox method. The Box-Cox method showed us if we needed to do any transformations to normalize the data. Before we could conduct the Box-Cox method, we needed to add 0.01 to all the y-values because it doesn’t allow us  to use the method with any zeros. By using the Box-Cox method, we found that none of the data needed to be normalized. 
+   
+## Results
    
 ```{r r^2 chart, message = FALSE, warning = FALSE, echo = FALSE}
 r_squared_chart<-data.frame(Team_Variable=c("Ace","Assists","Block_Solo","Block_Assists", "Total_Block", "Digs","Kills","Errors","Total_Attacks"), R_2=c(0.07337, 0.1374, 0.004121,0.1491,0.1426,0.008188,0.1384,0.1383, -0.002478), stringsAsFactors = FALSE)
 r_squared_chart
 ```
-We first compared all the R^2 for each team statistic variable. By doing this we were able to rule out the majority of the team statistic variables that didn't influence the win-loss percentage. When looking at the R^2 values we saw that block assists and total blocks have the two highest values. We then took these two variables and started looking at their simple linear regression plots and four diagnostic plots.
+
+The table above is showing each team statistic and its corresponding $R^{2}$ value. We found that Block Assists and Total Block had the highest $R^{2}$ values, so we continue to analyze these two team statistics more below. 
 
 ```{r ace, include = FALSE}
 ace_lm = lm((Win_Percentage+0.01)~Aces, data = NCAA_full_set)
@@ -192,6 +195,7 @@ par(mfrow = c(2,2))
 plot(block_assists_trans)
 ```
 
+
 ```{r block_assists_plot, echo = FALSE, message = FALSE, warning = FALSE}
 block_assists_plot = ggplot(aes(x = Block_Assists, y = Win_Percentage), data = NCAA_full_set) +
   geom_point() +
@@ -203,41 +207,45 @@ plot(block_assists_lm)
 
 boxCox(block_assists_lm)
 ```
-Here we first looked at the linear regression model. The graph shows a moderately strong positive linear correlation. There are a significant amount of points that aren't near the linear line so it's not a great display of the correlation between the block assists and win percentage. The next thing we looked at was the four diagnostic plots for block assists. When looking at the normal qq plot, the points tend to follow the line with a few skewed left at the end and few points skewed right at the beginning. When looking at the residual vs leverage plot there are a few points that are outside of the -2 and 2 range. For the most part a majority of the data points stay in between the two. The plot that was looked at was the Box-Cox plot. This plot showed if we need to add any transformations to normalize our data. We found that it included one which means we don't need any transformations to normalize the data.
+Here we first looked at the linear regression model for the Block Assists variable. The graph shows a moderately strong positive linear correlation. There are a significant amount of points that aren't near the linear line so it's not a great display of the correlation between the block assists and win percentage. The next thing we looked at was the four diagnostic plots for block assists. When looking at the normal qq plot, the points tend to follow the line with a few skewed left at the end and few points skewed right at the beginning. When looking at the residual vs leverage plot there are a few points that are outside of the -2 and 2 range. For the most part a majority of the data points stay in between the two. The plot that was looked at was the Box-Cox plot. This plot showed if we need to add any transformations to normalize our data. We found that it included one which means we don't need any transformations to normalize the data.
 
-```{r triple block, include = FALSE}
-triple_block_lm = lm(Win_Percentage+0.01~Triple_Block, data = NCAA_full_set)
-summary(triple_block_lm)
+```{r total block, include = FALSE}
+total_block_lm = lm(Win_Percentage+0.01~Total_Block, data = NCAA_full_set)
+summary(total_block_lm)
 
-triple_block_trans = lm(log(Win_Percentage + 0.01)~Triple_Block, data = NCAA_full_set)
-summary(triple_block_trans)
+total_block_trans = lm(log(Win_Percentage + 0.01)~Total_Block, data = NCAA_full_set)
+summary(total_block_trans)
 
-triple_block2_plot = ggplot(aes(x = Triple_Block, y = log(Win_Percentage)), data = NCAA_full_set) +
+total_block2_plot = ggplot(aes(x = Total_Block, y = log(Win_Percentage)), data = NCAA_full_set) +
   geom_point() +
   geom_smooth(method = "lm")
-triple_block2_plot
+total_block2_plot
 
 par(mfrow = c(2,2))
-plot(triple_block_trans)
-``` 
+plot(total_block_trans)
+```
 
-```{r triple_block_plot, echo = FALSE, message = FALSE, warning = FALSE}
-triple_block_plot = ggplot(aes(x = Triple_Block, y = Win_Percentage), data = NCAA_full_set) +
+
+```{r triple_block_plot1, echo = FALSE, message = FALSE, warning = FALSE}
+total_block_plot = ggplot(aes(x = Total_Block, y = Win_Percentage), data = NCAA_full_set) +
   geom_point() +
   geom_smooth(method = "lm")
-triple_block_plot
+total_block_plot
 ```
+
 The scatterplot above shows the relationship between Total Block and Win Percentage. This plot shows a positive relationship where, as a team's total blocks increase, their win percentage will increase.
 
-```{r triple_block_plot, echo = FALSE, message = FALSE, warning = FALSE}
+```{r triple_block_plot2, echo = FALSE, message = FALSE, warning = FALSE}
 par(mfrow = c(2,2))
-plot(triple_block_lm)
+plot(total_block_lm)
 
-boxCox(triple_block_lm)
+boxCox(total_block_lm)
 ```
 In the four diagnostic plots for Total Block, it can be seen in the Normal Q-Q plot that there is skewness on the lower and upper bounds of the plot. This is shown in the points that deviate from the line. In the Scale_Location plot, the red line is roughly horizontal with a slight negative trend in the lower fitted values. In the Residuals vs Leverage plot, it shows a few values with -3 and 3 standardized residuals, but no points in the right corners of the plot which usually suggest possible outliers. 
 
 Looking at the Box-Cox plot, it shows that the best $\lambda$ value is 1, which suggests no transformation to the linear model. 
+
+
 
 ```{r digs, include = FALSE}
 digs_lm = lm(Win_Percentage+0.01~Digs, data = NCAA_full_set)
@@ -368,26 +376,28 @@ boxCox(total_attacks_lm)
 
 
 ```{r scatterplot matrix, warning = FALSE, message = FALSE, echo = FALSE}
-ggpairs(NCAA_full_set %>% dplyr::select(Win_Percentage, Block_Assists, Triple_Block))
+ggpairs(NCAA_full_set %>% dplyr::select(Win_Percentage, Block_Assists, Total_Block))
 ```
+
+This scatterplot matrix shows that the three variables, Win Percentage, Block Assists and Total Block, are each approximately normal. This also supports our decision to not transform the data since it is already approximately normal with no noticeable skewness or outliers. 
 
 ```{r forest plot, warning = FALSE, message = FALSE, echo = FALSE}
 slope_vector = c(coefficients(ace_lm)[2], 
                  coefficients(assists_lm)[2], 
                  coefficients(block_solo_lm)[2], 
                  coefficients(block_assists_lm)[2], 
-                 coefficients(triple_block_lm)[2], 
+                 coefficients(total_block_lm)[2], 
                  coefficients(digs_lm)[2], 
                  coefficients(kills_lm)[2], 
                  coefficients(errors_lm)[2], 
                  coefficients(total_attacks_lm)[2])
 
-mod_summary_df = data.frame(mod = c("ace_lm", "assists_lm", "block_solo_lm", "block_assists_lm", "triple_block_lm", "digs_lm", "kills_lm", "errors_lm", "total_attacks_lm"), slope_vector) %>% mutate(
+mod_summary_df = data.frame(mod = c("ace_lm", "assists_lm", "block_solo_lm", "block_assists_lm", "total_block_lm", "digs_lm", "kills_lm", "errors_lm", "total_attacks_lm"), slope_vector) %>% mutate(
   bind_rows(confint(ace_lm)[2,], 
             confint(assists_lm)[2,],
             confint(block_solo_lm)[2,],
             confint(block_assists_lm)[2,],
-            confint(triple_block_lm)[2,],
+            confint(total_block_lm)[2,],
             confint(digs_lm)[2,],
             confint(kills_lm)[2,],
             confint(errors_lm)[2,],
@@ -400,3 +410,6 @@ ggplot(data = mod_summary_df, aes(y = Estimate, ymin = Lower_bound, ymax = Upper
   geom_hline(yintercept = 0, lty = 2) +
   coord_flip()
 ```
+The forest plot above is showing the confidence intervals for each team statistic variable's slope. If the confidence interval includes 0, that means that there is no correlation between the team statistic and their win percentage. From this plot, we see that the variables Total Attacks, Digs, and Block Solo include 0 in the confidence interval. This also shows that Total Block and Block Assists do not contain 0, so there is a correlation between their team statistics and win percentage. 
+
+After looking at the $R^{2}$ values for each team statistic, as well as the 4 diagnostic plots and scatterplot matrix, we have concluded that Block Assists is the most highly predictive of a team's wins and losses. Between Block Assists and Total Block, Block Assists had a higher $R^{2}$ value, and the 4 diagnostic plots showed more normality with less possible outliers.
